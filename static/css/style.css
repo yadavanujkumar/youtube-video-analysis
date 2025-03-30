@@ -1,0 +1,59 @@
+body {
+    background-color: #f5f5f5;
+    padding-bottom: 50px;
+}
+
+.container {
+    max-width: 1000px;
+}
+
+header {
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-weight: 700;
+    color: #3a3a3a;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #4285f4;
+    border-color: #4285f4;
+}
+
+.btn-success {
+    background-color: #34a853;
+    border-color: #34a853;
+}
+
+#response-content {
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
+#query-history .list-group-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#query-history .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+#video-thumbnail {
+    max-height: 150px;
+    width: auto;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+}
