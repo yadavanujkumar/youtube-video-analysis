@@ -4,6 +4,7 @@ import uuid
 from pytube import YouTube
 import logging
 import yt_dlp
+import traceback
 
 
 class YouTubeProcessor:
@@ -52,29 +53,29 @@ class YouTubeProcessor:
         except Exception as e:
             self.logger.error(f"Error extracting video info: {str(e)}")
             raise Exception(f"Failed to extract video information: {str(e)}")
-    
-    def download_audio(self, url):
-        """Download the audio track from the YouTube video."""
+
+    def download_audio(self, url: str) -> str:
         try:
-            yt = YouTube(url)
-            audio_stream = yt.streams.filter(only_audio=True).first()
-            
-            if not audio_stream:
-                raise Exception("No audio stream available for this video")
-            
-            # Create a unique filename
-            filename = f"{uuid.uuid4()}.mp3"
-            output_path = os.path.join(self.temp_dir, filename)
-            
-            # Download the audio
-            audio_stream.download(output_path=self.temp_dir, filename=filename)
-            
-            self.logger.info(f"Audio downloaded: {output_path}")
-            return output_path
+            ydl_opts = {
+                'format': 'bestaudio/best',
+                'outtmpl': 'audio/%(title)s.%(ext)s',  # Save to "audio" folder
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                }],
+                'verbose': True,  # Debugging logs
+                'cookiefile': 'cookies.txt',  # For restricted videos
+                'ffmpeg_location': r'C:\Program Files\ffmpeg-7.1.1-essentials_build\bin',  # Path to FFmpeg
+            }
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=True)
+                return ydl.prepare_filename(info).replace(".webm", ".mp3")
+
         except Exception as e:
-            self.logger.error(f"Error downloading audio: {str(e)}")
-            raise Exception(f"Failed to download audio: {str(e)}")
-    
+            print(f"Error: {str(e)}\n{traceback.format_exc()}")
+            raise
+        
     def cleanup(self, file_path):
         """Clean up temporary files."""
         try:
